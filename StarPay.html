@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>TopUP e-Wallet & Pulsa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        input, textarea, [contenteditable="true"] {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+        body {
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px;
+        }
+        #app {
+            max-width: 480px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 32px 32px 28px 28px;
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid #333333;
+        }
+        .app-header {
+            background: #1e1e1e;
+            padding: 18px 20px 14px 20px;
+            color: #ffffff;
+            border-bottom: 1px solid #333333;
+        }
+        .app-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.2;
+        }
+        .app-header h1 i {
+            font-size: 1.8rem;
+            color: #cccccc;
+        }
+        .app-header .sub {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 6px;
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+        .view {
+            padding: 22px 18px 28px 18px;
+            background: #ffffff;
+            transition: 0.2s;
+        }
+        .section-label {
+            color: #2c2c2c;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-label i {
+            color: #4a4a4a;
+        }
+        .ewallet-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 5px;
+        }
+        .wallet-card {
+            background: #f5f5f5;
+            border: 1.5px solid #d4d4d4;
+            border-radius: 22px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .wallet-card:hover {
+            border-color: #2c2c2c;
+            background: #e6e6e6;
+            transform: scale(0.98);
+        }
+        .wallet-logo {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 16px;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+        .wallet-name {
+            font-weight: 700;
+            color: #1e1e1e;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        .back-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: #2c2c2c;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 6px 10px 6px 0;
+        }
+        .selected-wallet-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0f0f0;
+            padding: 6px 18px 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #b0b0b0;
+        }
+        .selected-wallet-badge img {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+        .field-group {
+            background: #f7f7f7;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 18px 0;
+            border: 1px solid #d6d6d6;
+        }
+        .phone-field, .name-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border-radius: 60px;
+            padding: 6px 6px 6px 18px;
+            border: 1px solid #a0a0a0;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .phone-field input, .name-field input {
+            flex: 1;
+            border: none;
+            padding: 14px 0;
+            font-size: 1rem;
+            background: transparent;
+            outline: none;
+            min-width: 0;
+            width: 100%;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        .contact-btn {
+            background: #2c2c2c;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 16px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .contact-btn i {
+            color: #cccccc;
+            font-size: 1rem;
+        }
+        .inline-controls {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0 12px;
+            flex-wrap: wrap;
+        }
+        .ewallet-nav-btn {
+            background: #e0e0e0;
+            border: none;
+            border-radius: 40px;
+            padding: 10px 18px;
+            font-weight: 600;
+            color: #1e1e1e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+        .ewallet-nav-btn i {
+            color: #2c2c2c;
+        }
+        .kategori-dropdown {
+            background: white;
+            border: 2px solid #2c2c2c;
+            border-radius: 40px;
+            padding: 8px 18px;
+            font-weight: 600;
+            color: #2c2c2c;
+            cursor: pointer;
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kategori-dropdown select {
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #2c2c2c;
+            outline: none;
+            width: 100%;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0 28px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .product-item {
+            background: #f5f5f5;
+            border-radius: 16px;
+            padding: 12px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid transparent;
+            transition: 0.1s;
+            cursor: pointer;
+            text-align: center;
+        }
+        .product-item.selected {
+            border-color: #2c2c2c;
+            background: #e0e0e0;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+        .product-nominal {
+            font-weight: 700;
+            color: #1e1e1e;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+        .product-price {
+            color: #333333;
+            font-weight: 700;
+            background: #ffffff;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            border: 1px solid #cccccc;
+            display: inline-block;
+        }
+        .next-btn, .buy-btn {
+            background: #1e1e1e;
+            border: none;
+            border-radius: 60px;
+            padding: 18px 24px;
+            width: 100%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-top: 8px;
+            border: 1px solid #333333;
+        }
+        .next-btn:disabled, .buy-btn:disabled {
+            background: #b0b0b0;
+            cursor: not-allowed;
+        }
+        .detail-card {
+            background: #f7f7f7;
+            border-radius: 28px;
+            padding: 22px;
+            margin: 16px 0;
+            border: 1px solid #d4d4d4;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #bdbdbd;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #2c2c2c;
+            font-weight: 500;
+        }
+        .detail-value {
+            font-weight: 700;
+            color: #1e1e1e;
+        }
+        .qris-area {
+            background: #fafafa;
+            border-radius: 30px;
+            padding: 20px 16px;
+            text-align: center;
+            border: 2px dashed #2c2c2c;
+            margin: 20px 0;
+        }
+        .qris-area img {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 16px;
+            display: block;
+            border-radius: 20px;
+            background: white;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+        .qris-area p:last-child {
+            display: none;
+        }
+        .whatsapp-notif {
+            background: #25D366;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin: 15px 0 0;
+            border-left: 4px solid #075e54;
+            font-weight: 600;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .error-msg {
+            color: #b00020;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            padding-left: 12px;
+        }
+        .name-field {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="app-header">
+        <h1><i class="fas fa-wallet"></i> TOP-UP PULSA & E-WALLET</h1>
+        <div class="sub">Belanja Aman, Cepat, Garansi Uang Kembali</div>
+    </div>
+    <div id="homeView" class="view">
+        <div class="section-label"><i class="fas fa-hand-pointer"></i> PILIH PRODUK</div>
+        <div class="ewallet-grid" id="ewalletGrid"></div>
+    </div>
+    <div id="nominalView" class="view hidden">
+        <div class="back-row">
+            <button class="back-btn" id="backToHomeBtn"><i class="fas fa-arrow-left"></i> kembali</button>
+            <div id="selectedWalletBadge" class="selected-wallet-badge"></div>
+        </div>
+        <div class="field-group">
+            <div class="section-label"><i class="fas fa-phone-alt"></i> NOMOR HANDPHONE</div>
+            <div class="phone-field">
+                <input type="tel" id="phoneInput" placeholder="08xxxxxxx" value="">
+                <button class="contact-btn" id="contactPickerBtn"><i class="fas fa-address-book"></i> kontak</button>
+            </div>
+            <div id="phoneError" class="error-msg"></div>
+        </div>
+        <div class="inline-controls">
+            <button class="ewallet-nav-btn" id="pilihEwalletBtn"><i class="fas fa-chevron-circle-left"></i> Ganti</button>
+            <div class="kategori-dropdown">
+                <select id="kategoriSelect"></select>
+            </div>
+        </div>
+        <div class="section-label" style="margin-top: 4px;"><i class="fas fa-tag"></i> PILIH NOMINAL</div>
+        <div id="productListContainer" class="product-list"></div>
+        <button class="next-btn" id="goToDetailBtn" disabled><span>LANJUT</span> <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div id="detailView" class="view hidden">
+        <div class="back-row">
+            <button class="back-btn" id="backToNominalBtn"><i class="fas fa-arrow-left"></i> kembali</button>
+            <span style="font-weight: 600; color:#2c2c2c;">Detail pesanan</span>
+        </div>
+        <div class="detail-card" id="detailCard"></div>
+        <div class="name-field">
+            <input type="text" id="customerNameInput" placeholder="Nama pelanggan (opsional)" value="">
+        </div>
+        <div class="section-label"><i class="fas fa-qrcode"></i> PEMBAYARAN QRIS</div>
+        <div class="qris-area">
+            <img src="https://i.postimg.cc/FKBx2LFj/quick-response-code-indonesia-standard-qris-logo-png-seeklogo-391791.png" alt="QRIS Standard" id="qrisImage">
+            <p style="color: #1e1e1e; font-weight: 500;">Rp <span id="qrisAmount"></span></p>
+        </div>
+        <button class="buy-btn" id="beliSekarangBtn"><span>BELI SEKARANG</span> <i class="fab fa-whatsapp"></i></button>
+        <div id="whatsappNotif" class="whatsapp-notif hidden"></div>
+    </div>
+</div>
+<script>
+    (function() {
+        // Konfigurasi WhatsApp (nomor tujuan)
+        const CONFIG = { WHATSAPP_NUMBER: '6285178271400' }; // +62 851-7827-1400
+
+        const ewalletData = [
+            // E-WALLET LAMA
+            { id: 'dana', name: 'Dana', logo: 'https://i.postimg.cc/tJRsXrgY/c033e66fcd9f58766_GStory_1773534013595.png', products: [
+                { nominal: 'Dana 1.000', price: 1500 }, { nominal: 'Dana 2.000', price: 2500 }, { nominal: 'Dana 3.000', price: 3500 }, { nominal: 'Dana 4.000', price: 4500 }, { nominal: 'Dana 5.000', price: 5500 }, { nominal: 'Dana 6.000', price: 6500 }, { nominal: 'Dana 7.000', price: 7500 }, { nominal: 'Dana 8.000', price: 8500 }, { nominal: 'Dana 9.000', price: 9500 }, { nominal: 'Dana 10.000', price: 10500 }, { nominal: 'Dana 15.000', price: 15500 }, { nominal: 'Dana 20.000', price: 20500 }, { nominal: 'Dana 25.000', price: 25500 }, { nominal: 'Dana 30.000', price: 30500 }, { nominal: 'Dana 35.000', price: 35500 }, { nominal: 'Dana 40.000', price: 40500 }, { nominal: 'Dana 45.000', price: 45500 }, { nominal: 'Dana 50.000', price: 50500 }, { nominal: 'Dana 55.000', price: 55500 }, { nominal: 'Dana 60.000', price: 60500 }, { nominal: 'Dana 65.000', price: 65500 }, { nominal: 'Dana 70.000', price: 70500 }, { nominal: 'Dana 75.000', price: 75500 }, { nominal: 'Dana 80.000', price: 80500 }, { nominal: 'Dana 85.000', price: 85500 }, { nominal: 'Dana 90.000', price: 90500 }, { nominal: 'Dana 95.000', price: 95500 }, { nominal: 'Dana 100.000', price: 100500 }, { nominal: 'Dana 125.000', price: 125500 }, { nominal: 'Dana 150.000', price: 150500 }, { nominal: 'Dana 200.000', price: 200500 }, { nominal: 'Dana 250.000', price: 250500 }, { nominal: 'Dana 300.000', price: 300500 }, { nominal: 'Dana 400.000', price: 400500 }, { nominal: 'Dana 500.000', price: 500500 }, { nominal: 'Dana 600.000', price: 600500 }, { nominal: 'Dana 700.000', price: 700500 }, { nominal: 'Dana 800.000', price: 800500 }, { nominal: 'Dana 900.000', price: 900500 }, { nominal: 'Dana 1.000.000', price: 1000500 }
+            ]},
+            { id: 'gopay', name: 'Gopay', logo: 'https://i.postimg.cc/GtMH9kB9/489885e41161849591_GStory_1773534055071.png', products: [
+                { nominal: 'Gopay 1.000', price: 2300 }, { nominal: 'Gopay 2.000', price: 3300 }, { nominal: 'Gopay 3.000', price: 4300 }, { nominal: 'Gopay 4.000', price: 5300 }, { nominal: 'Gopay 5.000', price: 6300 }, { nominal: 'Gopay 6.000', price: 7300 }, { nominal: 'Gopay 7.000', price: 8300 }, { nominal: 'Gopay 8.000', price: 9300 }, { nominal: 'Gopay 9.000', price: 10300 }, { nominal: 'Gopay 10.000', price: 10810 }, { nominal: 'Gopay 15.000', price: 15810 }, { nominal: 'Gopay 20.000', price: 20810 }, { nominal: 'Gopay 25.000', price: 25810 }, { nominal: 'Gopay 30.000', price: 30810 }, { nominal: 'Gopay 35.000', price: 35810 }, { nominal: 'Gopay 40.000', price: 40810 }, { nominal: 'Gopay 45.000', price: 45880 }, { nominal: 'Gopay 50.000', price: 50880 }, { nominal: 'Gopay 55.000', price: 55880 }, { nominal: 'Gopay 60.000', price: 60880 }, { nominal: 'Gopay 65.000', price: 65880 }, { nominal: 'Gopay 70.000', price: 70880 }, { nominal: 'Gopay 75.000', price: 75880 }, { nominal: 'Gopay 80.000', price: 80880 }, { nominal: 'Gopay 85.000', price: 85880 }, { nominal: 'Gopay 90.000', price: 90880 }, { nominal: 'Gopay 95.000', price: 95880 }, { nominal: 'Gopay 100.000', price: 100880 }, { nominal: 'Gopay 125.000', price: 126350 }, { nominal: 'Gopay 150.000', price: 151310 }, { nominal: 'Gopay 200.000', price: 201310 }, { nominal: 'Gopay 250.000', price: 251410 }, { nominal: 'Gopay 300.000', price: 301410 }, { nominal: 'Gopay 400.000', price: 401410 }, { nominal: 'Gopay 500.000', price: 501410 }, { nominal: 'Gopay 600.000', price: 601410 }, { nominal: 'Gopay 700.000', price: 701410 }, { nominal: 'Gopay 800.000', price: 801410 }, { nominal: 'Gopay 900.000', price: 901410 }, { nominal: 'Gopay 1.000.000', price: 1001410 }
+            ]},
+            { id: 'shopeepay', name: 'ShopeePay', logo: 'https://i.postimg.cc/Y0Xhj14Q/268f4d3f4778750667_GStory_1773534100987.png', products: [
+                { nominal: 'ShopeePay 10.000', price: 11180 }, { nominal: 'ShopeePay 15.000', price: 16180 }, { nominal: 'ShopeePay 20.000', price: 21180 }, { nominal: 'ShopeePay 25.000', price: 26180 }, { nominal: 'ShopeePay 30.000', price: 31180 }, { nominal: 'ShopeePay 35.000', price: 36180 }, { nominal: 'ShopeePay 40.000', price: 41180 }, { nominal: 'ShopeePay 45.000', price: 46180 }, { nominal: 'ShopeePay 50.000', price: 51180 }, { nominal: 'ShopeePay 55.000', price: 56180 }, { nominal: 'ShopeePay 60.000', price: 61180 }, { nominal: 'ShopeePay 65.000', price: 66180 }, { nominal: 'ShopeePay 70.000', price: 71180 }, { nominal: 'ShopeePay 75.000', price: 76180 }, { nominal: 'ShopeePay 80.000', price: 81180 }, { nominal: 'ShopeePay 85.000', price: 86180 }, { nominal: 'ShopeePay 90.000', price: 91180 }, { nominal: 'ShopeePay 95.000', price: 96180 }, { nominal: 'ShopeePay 100.000', price: 101180 }, { nominal: 'ShopeePay 125.000', price: 126180 }, { nominal: 'ShopeePay 150.000', price: 151180 }, { nominal: 'ShopeePay 200.000', price: 201180 }, { nominal: 'ShopeePay 250.000', price: 251180 }, { nominal: 'ShopeePay 300.000', price: 301180 }, { nominal: 'ShopeePay 350.000', price: 351180 }, { nominal: 'ShopeePay 400.000', price: 401180 }, { nominal: 'ShopeePay 450.000', price: 451180 }, { nominal: 'ShopeePay 500.000', price: 501180 }, { nominal: 'ShopeePay 550.000', price: 551180 }, { nominal: 'ShopeePay 600.000', price: 601180 }, { nominal: 'ShopeePay 650.000', price: 651180 }, { nominal: 'ShopeePay 700.000', price: 701180 }, { nominal: 'ShopeePay 750.000', price: 751180 }, { nominal: 'ShopeePay 800.000', price: 801180 }, { nominal: 'ShopeePay 850.000', price: 851180 }, { nominal: 'ShopeePay 900.000', price: 901180 }, { nominal: 'ShopeePay 950.000', price: 951180 }, { nominal: 'ShopeePay 1.000.000', price: 1001180 }
+            ]},
+            { id: 'ovo', name: 'OVO', logo: 'https://i.postimg.cc/qBQtmdmg/00b466ff4a0e998249_GStory_1773534162022.png', products: [
+                { nominal: 'OVO 10.000', price: 11470 }, { nominal: 'OVO 15.000', price: 16470 }, { nominal: 'OVO 20.000', price: 21130 }, { nominal: 'OVO 25.000', price: 26130 }, { nominal: 'OVO 30.000', price: 31130 }, { nominal: 'OVO 35.000', price: 36130 }, { nominal: 'OVO 40.000', price: 41130 }, { nominal: 'OVO 45.000', price: 46130 }, { nominal: 'OVO 50.000', price: 51130 }, { nominal: 'OVO 55.000', price: 56130 }, { nominal: 'OVO 60.000', price: 61130 }, { nominal: 'OVO 65.000', price: 66130 }, { nominal: 'OVO 70.000', price: 71130 }, { nominal: 'OVO 75.000', price: 76130 }, { nominal: 'OVO 80.000', price: 81130 }, { nominal: 'OVO 85.000', price: 86130 }, { nominal: 'OVO 90.000', price: 91130 }, { nominal: 'OVO 95.000', price: 96130 }, { nominal: 'OVO 100.000', price: 101130 }, { nominal: 'OVO 125.000', price: 126130 }, { nominal: 'OVO 150.000', price: 151130 }, { nominal: 'OVO 200.000', price: 201130 }, { nominal: 'OVO 250.000', price: 251130 }, { nominal: 'OVO 300.000', price: 301130 }, { nominal: 'OVO 350.000', price: 351130 }, { nominal: 'OVO 400.000', price: 401130 }, { nominal: 'OVO 450.000', price: 451130 }, { nominal: 'OVO 500.000', price: 501130 }, { nominal: 'OVO 600.000', price: 601130 }, { nominal: 'OVO 700.000', price: 701130 }, { nominal: 'OVO 800.000', price: 801130 }, { nominal: 'OVO 900.000', price: 901130 }, { nominal: 'OVO 1.000.000', price: 1001130 }
+            ]},
+            { id: 'linkAja', name: 'LinkAja', logo: 'https://i.postimg.cc/CL1RX6tD/bc8d04b39c5b973830_GStory_1773534499083.jpg', products: [
+                { nominal: 'LinkAja 10.000', price: 10760 }, { nominal: 'LinkAja 15.000', price: 15760 }, { nominal: 'LinkAja 20.000', price: 20760 }, { nominal: 'LinkAja 25.000', price: 25760 }, { nominal: 'LinkAja 30.000', price: 30760 }, { nominal: 'LinkAja 35.000', price: 35760 }, { nominal: 'LinkAja 40.000', price: 40760 }, { nominal: 'LinkAja 45.000', price: 45760 }, { nominal: 'LinkAja 50.000', price: 50760 }, { nominal: 'LinkAja 55.000', price: 55760 }, { nominal: 'LinkAja 60.000', price: 60760 }, { nominal: 'LinkAja 65.000', price: 65760 }, { nominal: 'LinkAja 70.000', price: 70760 }, { nominal: 'LinkAja 75.000', price: 75760 }, { nominal: 'LinkAja 80.000', price: 80760 }, { nominal: 'LinkAja 85.000', price: 85760 }, { nominal: 'LinkAja 90.000', price: 90760 }, { nominal: 'LinkAja 95.000', price: 95760 }, { nominal: 'LinkAja 100.000', price: 100760 }, { nominal: 'LinkAja 125.000', price: 125760 }, { nominal: 'LinkAja 150.000', price: 150760 }, { nominal: 'LinkAja 200.000', price: 200800 }, { nominal: 'LinkAja 250.000', price: 251010 }, { nominal: 'LinkAja 300.000', price: 301040 }, { nominal: 'LinkAja 400.000', price: 401010 }, { nominal: 'LinkAja 500.000', price: 501010 }, { nominal: 'LinkAja 600.000', price: 601010 }, { nominal: 'LinkAja 700.000', price: 701010 }, { nominal: 'LinkAja 800.000', price: 801040 }, { nominal: 'LinkAja 900.000', price: 901010 }, { nominal: 'LinkAja 1.000.000', price: 1001010 }
+            ]},
+            { id: 'maxim', name: 'Maxim Driver', logo: 'https://i.postimg.cc/mrJxZh2T/1ff34cc41a06107341_GStory_1773534798904.png', products: [
+                { nominal: 'Maxim Driver 5.000', price: 7790 }, { nominal: 'Maxim Driver 7.000', price: 9790 }, { nominal: 'Maxim Driver 10.000', price: 12790 }, { nominal: 'Maxim Driver 15.000', price: 17790 }, { nominal: 'Maxim Driver 17.000', price: 19790 }, { nominal: 'Maxim Driver 20.000', price: 22790 }, { nominal: 'Maxim Driver 25.000', price: 27790 }, { nominal: 'Maxim Driver 27.000', price: 29790 }, { nominal: 'Maxim Driver 30.000', price: 32790 }, { nominal: 'Maxim Driver 35.000', price: 37790 }, { nominal: 'Maxim Driver 40.000', price: 42790 }, { nominal: 'Maxim Driver 42.000', price: 44790 }, { nominal: 'Maxim Driver 45.000', price: 47950 }, { nominal: 'Maxim Driver 47.000', price: 49790 }, { nominal: 'Maxim Driver 50.000', price: 52790 }, { nominal: 'Maxim Driver 67.000', price: 69790 }, { nominal: 'Maxim Driver 70.000', price: 72790 }, { nominal: 'Maxim Driver 97.000', price: 100190 }, { nominal: 'Maxim Driver 100.000', price: 103190 }, { nominal: 'Maxim Driver 125.000', price: 128190 }, { nominal: 'Maxim Driver 147.000', price: 150190 }, { nominal: 'Maxim Driver 197.000', price: 200190 }, { nominal: 'Maxim Driver 247.000', price: 250190 }, { nominal: 'Maxim Driver 300.000', price: 303190 }
+            ]},
+            // PRODUK PULSA BARU
+            { id: 'xl', name: 'XL Transfer', logo: 'https://i.postimg.cc/mr9mbTmd/upscalemedia_transformed.jpg', products: [
+                { nominal: 'XL 5.000', price: 6590 }, { nominal: 'XL 10.000', price: 11570 }, { nominal: 'XL 15.000', price: 16490 }, { nominal: 'XL 20.000', price: 21490 }, { nominal: 'XL 25.000', price: 26220 }, { nominal: 'XL 30.000', price: 31490 }, { nominal: 'XL 35.000', price: 35940 }, { nominal: 'XL 40.000', price: 41090 }, { nominal: 'XL 45.000', price: 45540 }, { nominal: 'XL 50.000', price: 51110 }, { nominal: 'XL 55.000', price: 55680 }, { nominal: 'XL 60.000', price: 60790 }, { nominal: 'XL 65.000', price: 65290 }, { nominal: 'XL 70.000', price: 70190 }, { nominal: 'XL 75.000', price: 75110 }, { nominal: 'XL 80.000', price: 80570 }, { nominal: 'XL 85.000', price: 85090 }, { nominal: 'XL 90.000', price: 89590 }, { nominal: 'XL 95.000', price: 94240 }, { nominal: 'XL 100.000', price: 101220 }, { nominal: 'XL 150.000', price: 149390 }, { nominal: 'XL 200.000', price: 196140 }, { nominal: 'XL 300.000', price: 293840 }, { nominal: 'XL 400.000', price: 397540 }, { nominal: 'XL 500.000', price: 493140 }
+            ]},
+            { id: 'three', name: 'Three Transfer', logo: 'https://i.postimg.cc/RVjfvK2z/upscalemedia-transformed-1-Copy.jpg', products: [
+                { nominal: 'Three 10.000', price: 10620 }, { nominal: 'Three 20.000', price: 19950 }, { nominal: 'Three 25.000', price: 25070 }, { nominal: 'Three 30.000', price: 29710 }, { nominal: 'Three 50.000', price: 48640 }, { nominal: 'Three 55.000', price: 53380 }, { nominal: 'Three 60.000', price: 57890 }, { nominal: 'Three 65.000', price: 62570 }, { nominal: 'Three 70.000', price: 67080 }, { nominal: 'Three 75.000', price: 71680 }, { nominal: 'Three 80.000', price: 76270 }, { nominal: 'Three 85.000', price: 80970 }, { nominal: 'Three 90.000', price: 85460 }, { nominal: 'Three 95.000', price: 90160 }, { nominal: 'Three 100.000', price: 96480 }, { nominal: 'Three 150.000', price: 142490 }, { nominal: 'Three 200.000', price: 188930 }
+            ]},
+            { id: 'telkomsel', name: 'Telkomsel Transfer', logo: 'https://i.postimg.cc/yx2JYCQ3/download.jpg', products: [
+                { nominal: 'Tsel 10.000', price: 12200 }, { nominal: 'Tsel 15.000', price: 17010 }, { nominal: 'Tsel 20.000', price: 22470 }, { nominal: 'Tsel 25.000', price: 27080 }, { nominal: 'Tsel 30.000', price: 31680 }, { nominal: 'Tsel 35.000', price: 36130 }, { nominal: 'Tsel 40.000', price: 40890 }, { nominal: 'Tsel 45.000', price: 45410 }, { nominal: 'Tsel 50.000', price: 50900 }, { nominal: 'Tsel 55.000', price: 55470 }, { nominal: 'Tsel 60.000', price: 59920 }, { nominal: 'Tsel 65.000', price: 64570 }, { nominal: 'Tsel 70.000', price: 69120 }, { nominal: 'Tsel 75.000', price: 73680 }, { nominal: 'Tsel 80.000', price: 78230 }, { nominal: 'Tsel 85.000', price: 82790 }, { nominal: 'Tsel 90.000', price: 87340 }, { nominal: 'Tsel 95.000', price: 91900 }, { nominal: 'Tsel 100.000', price: 99700 }, { nominal: 'Tsel 110.000', price: 108810 }, { nominal: 'Tsel 120.000', price: 117920 }, { nominal: 'Tsel 125.000', price: 122470 }, { nominal: 'Tsel 140.000', price: 136140 }, { nominal: 'Tsel 145.000', price: 140690 }, { nominal: 'Tsel 150.000', price: 145250 }, { nominal: 'Tsel 200.000', price: 195350 }, { nominal: 'Tsel 225.000', price: 210890 }, { nominal: 'Tsel 250.000', price: 232990 }, { nominal: 'Tsel 275.000', price: 255290 }, { nominal: 'Tsel 300.000', price: 281690 }, { nominal: 'Tsel 350.000', price: 325690 }, { nominal: 'Tsel 450.000', price: 413690 }, { nominal: 'Tsel 500.000', price: 462970 }
+            ]},
+            { id: 'axis', name: 'Axis Transfer', logo: 'https://i.postimg.cc/SsvRDppT/IMG-20260315-232520.jpg', products: [
+                { nominal: 'Axis 5.000', price: 7090 }, { nominal: 'Axis 10.000', price: 11350 }, { nominal: 'Axis 15.000', price: 17140 }, { nominal: 'Axis 20.000', price: 20570 }, { nominal: 'Axis 20.000b', price: 21340 }, { nominal: 'Axis 30.000', price: 32140 }, { nominal: 'Axis 40.000', price: 40990 }, { nominal: 'Axis 50.000', price: 51010 }, { nominal: 'Axis 60.000', price: 61010 }, { nominal: 'Axis 70.000', price: 70440 }, { nominal: 'Axis 80.000', price: 79940 }, { nominal: 'Axis 90.000', price: 89540 }, { nominal: 'Axis 100.000', price: 101260 }, { nominal: 'Axis 150.000', price: 149560 }, { nominal: 'Axis 200.000', price: 197260 }
+            ]},
+            { id: 'indosat', name: 'Indosat Transfer', logo: 'https://i.postimg.cc/ry7CwBtx/329306702t.jpg', products: [
+                { nominal: 'Indosat 10.000', price: 10870 }, { nominal: 'Indosat 20.000', price: 20380 }, { nominal: 'Indosat 25.000', price: 25630 }, { nominal: 'Indosat 30.000', price: 30390 }, { nominal: 'Indosat 35.000', price: 35110 }, { nominal: 'Indosat 40.000', price: 39900 }, { nominal: 'Indosat 45.000', price: 44530 }, { nominal: 'Indosat 50.000', price: 49790 }, { nominal: 'Indosat 55.000', price: 54370 }, { nominal: 'Indosat 60.000', price: 59230 }, { nominal: 'Indosat 65.000', price: 63790 }, { nominal: 'Indosat 70.000', price: 68470 }, { nominal: 'Indosat 75.000', price: 73270 }, { nominal: 'Indosat 80.000', price: 78070 }, { nominal: 'Indosat 85.000', price: 82790 }, { nominal: 'Indosat 90.000', price: 87490 }, { nominal: 'Indosat 95.000', price: 92210 }, { nominal: 'Indosat 100.000', price: 98800 }, { nominal: 'Indosat 150.000', price: 145930 }, { nominal: 'Indosat 200.000', price: 193130 }
+            ]},
+            { id: 'smartfren', name: 'Smartfren Transfer', logo: 'https://i.postimg.cc/JzLNbjx7/697256868i.jpg', products: [
+                { nominal: 'SF 25.000', price: 25230 }, { nominal: 'SF 30.000', price: 30070 }, { nominal: 'SF 35.000', price: 34780 }, { nominal: 'SF 40.000', price: 39230 }, { nominal: 'SF 45.000', price: 43780 }, { nominal: 'SF 50.000', price: 49230 }, { nominal: 'SF 55.000', price: 54430 }, { nominal: 'SF 60.000', price: 58980 }, { nominal: 'SF 65.000', price: 63700 }, { nominal: 'SF 70.000', price: 68350 }, { nominal: 'SF 75.000', price: 72980 }, { nominal: 'SF 80.000', price: 77580 }, { nominal: 'SF 85.000', price: 82250 }, { nominal: 'SF 90.000', price: 86850 }, { nominal: 'SF 95.000', price: 91450 }, { nominal: 'SF 100.000', price: 96100 }
+            ]},
+            { id: 'byu', name: 'by.U Transfer', logo: 'https://i.postimg.cc/N0NRqSc9/983693495o.jpg', products: [
+                { nominal: 'byU 30.000', price: 30660 }, { nominal: 'byU 35.000', price: 35210 }, { nominal: 'byU 40.000', price: 39770 }, { nominal: 'byU 45.000', price: 44320 }, { nominal: 'byU 50.000', price: 49370 }, { nominal: 'byU 55.000', price: 53820 }, { nominal: 'byU 60.000', price: 58480 }, { nominal: 'byU 65.000', price: 63030 }, { nominal: 'byU 70.000', price: 67490 }, { nominal: 'byU 75.000', price: 72040 }, { nominal: 'byU 80.000', price: 76590 }, { nominal: 'byU 85.000', price: 81150 }, { nominal: 'byU 90.000', price: 85700 }, { nominal: 'byU 95.000', price: 90260 }, { nominal: 'byU 100.000', price: 96890 }, { nominal: 'byU 125.000', price: 119660 }, { nominal: 'byU 150.000', price: 142430 }, { nominal: 'byU 200.000', price: 190640 }, { nominal: 'byU 300.000', price: 294790 }, { nominal: 'byU 500.000', price: 484870 }
+            ]}
+        ];
+
+        // Prevent copy & context menu
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')) e.preventDefault(); });
+        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
+
+        let currentView = 'home';
+        let selectedEwallet = null;
+        let selectedProduct = null;
+        let phoneNumber = '';
+        let customerName = '';
+
+        // DOM elements
+        const homeView = document.getElementById('homeView');
+        const nominalView = document.getElementById('nominalView');
+        const detailView = document.getElementById('detailView');
+        const ewalletGrid = document.getElementById('ewalletGrid');
+        const selectedWalletBadge = document.getElementById('selectedWalletBadge');
+        const kategoriSelect = document.getElementById('kategoriSelect');
+        const productListContainer = document.getElementById('productListContainer');
+        const phoneInput = document.getElementById('phoneInput');
+        const phoneError = document.getElementById('phoneError');
+        const contactPickerBtn = document.getElementById('contactPickerBtn');
+        const goToDetailBtn = document.getElementById('goToDetailBtn');
+        const backToHomeBtn = document.getElementById('backToHomeBtn');
+        const pilihEwalletBtn = document.getElementById('pilihEwalletBtn');
+        const backToNominalBtn = document.getElementById('backToNominalBtn');
+        const beliSekarangBtn = document.getElementById('beliSekarangBtn');
+        const detailCard = document.getElementById('detailCard');
+        const qrisAmount = document.getElementById('qrisAmount');
+        const whatsappNotif = document.getElementById('whatsappNotif');
+        const customerNameInput = document.getElementById('customerNameInput');
+
+        // Helper functions
+        function validatePhone(number) {
+            const cleaned = number.replace(/\D/g, '');
+            return (cleaned.length >= 10 && cleaned.length <= 13) && (cleaned.startsWith('08') || cleaned.startsWith('628'));
+        }
+
+        function updatePhoneValidation() {
+            const num = phoneInput.value.trim();
+            if (num && !validatePhone(num)) {
+                phoneError.textContent = 'Nomor harus 08xx atau 628xx (10-13 digit)';
+                return false;
+            } else {
+                phoneError.textContent = '';
+                return true;
+            }
+        }
+
+        phoneInput.addEventListener('input', updatePhoneValidation);
+
+        // Contact picker (with fallback)
+        async function pickContact() {
+            if ('contacts' in navigator && 'select' in navigator.contacts) {
+                try {
+                    const contacts = await navigator.contacts.select(['tel'], { multiple: false });
+                    if (contacts.length > 0 && contacts[0].tel && contacts[0].tel.length > 0) {
+                        phoneInput.value = contacts[0].tel[0];
+                        updatePhoneValidation();
+                    } else {
+                        fallbackContactPicker();
+                    }
+                } catch (err) {
+                    fallbackContactPicker();
+                }
+            } else {
+                fallbackContactPicker();
+            }
+        }
+
+        function fallbackContactPicker() {
+            const dummyContacts = ['087798661202', '081234567890', '085712345678', '089876543210'];
+            let message = 'Pilih nomor kontak (simulasi):\n';
+            dummyContacts.forEach((c, i) => { message += `${i+1}. ${c}\n`; });
+            const input = prompt(message, dummyContacts[0]);
+            if (input && input.trim()) {
+                phoneInput.value = input.trim();
+                updatePhoneValidation();
+            }
+        }
+
+        contactPickerBtn.addEventListener('click', pickContact);
+
+        // Render home screen
+        function renderHome() {
+            ewalletGrid.innerHTML = '';
+            ewalletData.forEach(w => {
+                const card = document.createElement('div');
+                card.className = 'wallet-card';
+                card.dataset.id = w.id;
+                card.innerHTML = `<img class="wallet-logo" src="${w.logo}" alt="${w.name}" loading="lazy"><span class="wallet-name">${w.name}</span>`;
+                card.addEventListener('click', () => {
+                    selectedEwallet = w;
+                    selectedProduct = null;
+                    phoneNumber = phoneInput.value.trim();
+                    renderNominalView();
+                    switchView('nominal');
+                });
+                ewalletGrid.appendChild(card);
+            });
+        }
+
+        // Render nominal selection screen
+        function renderNominalView() {
+            if (!selectedEwallet) return;
+
+            // Update badge
+            selectedWalletBadge.innerHTML = `<img src="${selectedEwallet.logo}" alt="${selectedEwallet.name}"><span style="font-weight:600;">${selectedEwallet.name}</span>`;
+
+            // Populate dropdown
+            kategoriSelect.innerHTML = '';
+            ewalletData.forEach(w => {
+                const option = document.createElement('option');
+                option.value = w.id;
+                option.textContent = w.name;
+                if (selectedEwallet && w.id === selectedEwallet.id) option.selected = true;
+                kategoriSelect.appendChild(option);
+            });
+
+            kategoriSelect.onchange = (e) => {
+                const newWallet = ewalletData.find(w => w.id === e.target.value);
+                if (newWallet) {
+                    selectedEwallet = newWallet;
+                    selectedProduct = null;
+                    renderNominalView();
+                }
+            };
+
+            // Render products
+            productListContainer.innerHTML = '';
+            selectedEwallet.products.forEach(p => {
+                const prodDiv = document.createElement('div');
+                prodDiv.className = `product-item ${selectedProduct && selectedProduct.nominal === p.nominal ? 'selected' : ''}`;
+                prodDiv.innerHTML = `<span class="product-nominal">${p.nominal}</span><span class="product-price">Rp ${p.price.toLocaleString('id-ID')}</span>`;
+                prodDiv.addEventListener('click', () => {
+                    document.querySelectorAll('.product-item').forEach(el => el.classList.remove('selected'));
+                    prodDiv.classList.add('selected');
+                    selectedProduct = p;
+                    goToDetailBtn.disabled = false;
+                });
+                productListContainer.appendChild(prodDiv);
+            });
+
+            phoneInput.value = phoneNumber;
+            goToDetailBtn.disabled = !selectedProduct;
+            updatePhoneValidation();
+        }
+
+        // Render detail screen
+        function renderDetailView() {
+            if (!selectedEwallet || !selectedProduct) return;
+            const hp = phoneInput.value.trim();
+            phoneNumber = hp;
+            const name = customerNameInput.value.trim() || '-';
+            detailCard.innerHTML = `
+                <div class="detail-row"><span class="detail-label">Nomor Hp</span><span class="detail-value">${hp || '-'}</span></div>
+                <div class="detail-row"><span class="detail-label">Nama</span><span class="detail-value">${name}</span></div>
+                <div class="detail-row"><span class="detail-label">Provider</span><span class="detail-value">${selectedEwallet.name}</span></div>
+                <div class="detail-row"><span class="detail-label">Nominal</span><span class="detail-value">${selectedProduct.nominal}</span></div>
+                <div class="detail-row"><span class="detail-label">Harga</span><span class="detail-value">Rp ${selectedProduct.price.toLocaleString('id-ID')}</span></div>
+                <div class="detail-row"><span class="detail-label">Deskripsi</span><span class="detail-value">Transfer pulsa/saldo</span></div>
+            `;
+            qrisAmount.textContent = selectedProduct.price.toLocaleString('id-ID');
+            whatsappNotif.classList.add('hidden');
+        }
+
+        // Switch between views
+        function switchView(view) {
+            currentView = view;
+            homeView.classList.add('hidden');
+            nominalView.classList.add('hidden');
+            detailView.classList.add('hidden');
+            if (view === 'home') {
+                homeView.classList.remove('hidden');
+                selectedEwallet = null;
+                selectedProduct = null;
+                renderHome();
+            } else if (view === 'nominal') {
+                nominalView.classList.remove('hidden');
+                renderNominalView();
+            } else if (view === 'detail') {
+                detailView.classList.remove('hidden');
+                renderDetailView();
+            }
+        }
+
+        // Open WhatsApp with order details
+        function openWhatsApp() {
+            if (!selectedProduct) return false;
+            const hp = phoneInput.value.trim();
+            const name = customerNameInput.value.trim() || '-';
+            if (!hp) {
+                alert('Nomor HP harus diisi!');
+                return false;
+            }
+            if (!validatePhone(hp)) {
+                alert('Nomor HP tidak valid! Format harus 08xx atau 628xx (10-13 digit)');
+                return false;
+            }
+            const message = `🔹 *DETAIL TOPUP* 🔹\nProvider: ${selectedEwallet.name}\nProduk: ${selectedProduct.nominal}\nHarga: Rp ${selectedProduct.price.toLocaleString('id-ID')}\nDeskripsi: Transfer pulsa/saldo\n\nNomor HP: ${hp}\nNama: ${name}`;
+            const encodedMessage = encodeURIComponent(message);
+            const waNumber = CONFIG.WHATSAPP_NUMBER;
+            window.open(`https://wa.me/${waNumber}?text=${encodedMessage}`, '_blank');
+            whatsappNotif.classList.remove('hidden');
+            whatsappNotif.innerHTML = `<i class="fab fa-whatsapp"></i> Pesanan dikirim via WhatsApp ke +${waNumber}<br><small>${selectedProduct.nominal}</small>`;
+            return true;
+        }
+
+        // Event listeners
+        backToHomeBtn.addEventListener('click', () => switchView('home'));
+        pilihEwalletBtn.addEventListener('click', () => switchView('home'));
+        backToNominalBtn.addEventListener('click', () => switchView('nominal'));
+
+        goToDetailBtn.addEventListener('click', () => {
+            if (!selectedProduct) return;
+            const hp = phoneInput.value.trim();
+            if (!hp) {
+                alert('Nomor HP harus diisi!');
+                return;
+            }
+            if (!validatePhone(hp)) {
+                alert('Nomor HP tidak valid!');
+                return;
+            }
+            phoneNumber = hp;
+            switchView('detail');
+        });
+
+        beliSekarangBtn.addEventListener('click', () => {
+            if (!selectedProduct) {
+                alert('Pilih produk dulu');
+                switchView('nominal');
+                return;
+            }
+            const hp = phoneInput.value.trim();
+            if (!hp) {
+                alert('Nomor HP harus diisi!');
+                switchView('nominal');
+                return;
+            }
+            if (!validatePhone(hp)) {
+                alert('Nomor HP tidak valid!');
+                switchView('nominal');
+                return;
+            }
+            openWhatsApp();
+        });
+
+        // Update name in detail view when typing
+        customerNameInput.addEventListener('input', function() {
+            if (currentView === 'detail') {
+                const name = this.value.trim() || '-';
+                const nameSpan = document.querySelector('.detail-row:nth-child(2) .detail-value');
+                if (nameSpan) nameSpan.textContent = name;
+            }
+        });
+
+        // Initial render
+        renderHome();
+    })();
+</script>
+</body>
+</html>
